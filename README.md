@@ -1,2 +1,0 @@
-# bean-tracker
-HD tracker
