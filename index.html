@@ -80,24 +80,35 @@
                     oninput="searchFood(this.value)">
                 <div id="search-results" class="search-results hidden absolute z-10 w-full bg-white border rounded-xl mt-1 shadow-2xl"></div>
             </div>
-            
             <div class="text-center text-[10px] text-gray-300 font-bold uppercase tracking-widest">or browse by category</div>
-            
-            <select id="category-select" class="w-full p-3 bg-gray-50 border rounded-xl">
+            <select id="category-select" class="w-full p-3 bg-gray-50 border rounded-xl text-sm">
                 <option value="" disabled selected>Select Category</option>
             </select>
-            <select id="food-select" class="w-full p-3 bg-gray-50 border rounded-xl" disabled>
+            <select id="food-select" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" disabled>
                 <option value="" disabled selected>Select Item</option>
             </select>
             <button onclick="addFood()" id="add-food-btn" class="w-full bg-gray-800 text-white font-bold py-3 rounded-xl disabled:opacity-50" disabled>Add to Log</button>
         </section>
 
         <section id="section-binder" class="hidden bg-white p-5 rounded-2xl shadow-sm border-l-4 border-green-400">
-            <div class="space-y-3">
-                <select id="binder-select" class="w-full p-3 bg-gray-50 border rounded-xl">
-                    <option value="" disabled selected>Select Binder</option>
-                </select>
-                <button onclick="addBinder()" id="add-binder-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl disabled:opacity-50" disabled>Take Binder</button>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Binder Type</label>
+                    <select id="binder-select" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" onchange="checkBinderEnable()">
+                        <option value="" disabled selected>Select Binder</option>
+                    </select>
+                </div>
+                
+                <div class="text-center">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Quantity (Pills)</label>
+                    <div class="flex items-center justify-center space-x-6">
+                        <button onclick="changeQty(-1)" class="w-12 h-12 rounded-full border-2 border-green-500 text-green-500 text-2xl font-bold flex items-center justify-center active:bg-green-100">-</button>
+                        <span id="binder-qty-display" class="text-3xl font-black text-gray-700 w-8">1</span>
+                        <button onclick="changeQty(1)" class="w-12 h-12 rounded-full border-2 border-green-500 text-green-500 text-2xl font-bold flex items-center justify-center active:bg-green-100">+</button>
+                    </div>
+                </div>
+
+                <button onclick="addBinder()" id="add-binder-btn" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl disabled:opacity-50" disabled>Add <span id="btn-qty-label">1</span> Binder(s)</button>
             </div>
         </section>
 
@@ -109,7 +120,7 @@
         <section id="section-log">
             <div class="flex justify-between items-center mb-3 px-1">
                 <h2 class="text-lg font-semibold text-gray-700">Today's Entries</h2>
-                <button onclick="clearToday()" class="text-xs text-red-400 font-bold uppercase">Reset</button>
+                <button onclick="clearToday()" class="text-xs text-red-400 font-bold uppercase">Reset Day</button>
             </div>
             <ul id="log-list" class="space-y-2"></ul>
         </section>
@@ -151,7 +162,18 @@
         let dailyLog = JSON.parse(localStorage.getItem('bean_log')) || [];
         let limits = JSON.parse(localStorage.getItem('bean_limits')) || { k: 2000, p: 1000, f: 1000 };
         let history = JSON.parse(localStorage.getItem('bean_history')) || {};
+        let binderQty = 1;
         const todayKey = new Date().toISOString().split('T')[0];
+
+        function changeQty(amt) {
+            binderQty = Math.max(1, binderQty + amt);
+            document.getElementById('binder-qty-display').textContent = binderQty;
+            document.getElementById('btn-qty-label').textContent = binderQty;
+        }
+
+        function checkBinderEnable() {
+            document.getElementById('add-binder-btn').disabled = false;
+        }
 
         function getKClass(k) {
             if (k < 150) return 'pill-green';
@@ -217,7 +239,6 @@
             foodDatabase[e.target.value].forEach((f, i) => { const o = document.createElement('option'); o.value = i; o.textContent = f.name; fs.appendChild(o); });
         };
         document.getElementById('food-select').onchange = () => document.getElementById('add-food-btn').disabled = false;
-        document.getElementById('binder-select').onchange = () => document.getElementById('add-binder-btn').disabled = false;
 
         function addFood() {
             const f = foodDatabase[document.getElementById('category-select').value][document.getElementById('food-select').value];
@@ -226,7 +247,18 @@
 
         function addBinder() {
             const b = binderDatabase[document.getElementById('binder-select').value];
-            dailyLog.push({ name: b.name, k: 0, p: -b.bind, f: 0, type: 'binder', id: Date.now() }); saveAll();
+            dailyLog.push({ 
+                name: `${binderQty}x ${b.name}`, 
+                k: 0, 
+                p: -(b.bind * binderQty), 
+                f: 0, 
+                type: 'binder', 
+                id: Date.now() 
+            });
+            saveAll();
+            binderQty = 1;
+            document.getElementById('binder-qty-display').textContent = 1;
+            document.getElementById('btn-qty-label').textContent = 1;
         }
 
         function saveAll() {
@@ -253,7 +285,7 @@
 
         function renderLog() {
             const list = document.getElementById('log-list'); list.innerHTML = '';
-            if (dailyLog.length === 0) list.innerHTML = '<li class="text-center text-gray-400 py-6 italic text-sm text-white">No entries yet.</li>';
+            if (dailyLog.length === 0) list.innerHTML = '<li class="text-center text-gray-400 py-6 italic text-sm">No entries yet.</li>';
             dailyLog.slice().reverse().forEach(i => {
                 const li = document.createElement('li');
                 let colorClass = 'bg-white';
