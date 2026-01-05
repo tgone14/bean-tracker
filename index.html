@@ -237,13 +237,30 @@
         }
 
         function logFoodItem(food, category) {
-            dailyLog.push({ ...food, category, id: Date.now() });
-            document.getElementById('food-search').value = '';
-            document.getElementById('search-results').classList.add('hidden');
-            document.getElementById('category-items-list').classList.add('hidden');
-            document.getElementById('category-select').selectedIndex = 0;
-            saveAll();
-        }
+    const qty = prompt(`How many servings of ${food.name}?`, "1");
+    
+    // Validate that the user entered a number and didn't hit cancel
+    const numQty = parseFloat(qty);
+    if (isNaN(numQty) || numQty <= 0) return;
+
+    dailyLog.push({ 
+        ...food, 
+        name: numQty === 1 ? food.name : `${numQty}x ${food.name}`,
+        k: Math.round(food.k * numQty), 
+        p: Math.round(food.p * numQty), 
+        f: Math.round(food.f * numQty), 
+        category: category, 
+        id: Date.now() 
+    });
+
+    // Clear UI elements
+    document.getElementById('food-search').value = '';
+    document.getElementById('search-results').classList.add('hidden');
+    document.getElementById('category-items-list').classList.add('hidden');
+    document.getElementById('category-select').selectedIndex = 0;
+    
+    saveAll();
+}
 
         function renderLog() {
             const list = document.getElementById('log-list'); list.innerHTML = '';
@@ -312,6 +329,7 @@
     </script>
 </body>
 </html>
+
 
 
 
