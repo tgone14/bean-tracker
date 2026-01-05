@@ -16,7 +16,7 @@
         .progress-bar-bg { background-color: #e5e7eb; border-radius: 9999px; height: 1.2rem; overflow: hidden; }
         .progress-fill { height: 100%; transition: width 0.5s ease-in-out; }
         input, select { font-size: 16px !important; } 
-        .search-results { max-height: 250px; overflow-y: auto; z-index: 50; }
+        .search-results { max-height: 300px; overflow-y: auto; z-index: 50; }
         
         /* Traffic Light Colors */
         .k-green { background-color: #dcfce7; color: #166534; border-left: 4px solid #22c55e; }
@@ -149,6 +149,182 @@
         let limits = JSON.parse(localStorage.getItem('bean_limits')) || { k: 2000, p: 1000, f: 1000 };
         let history = JSON.parse(localStorage.getItem('bean_history')) || {};
         let binderQty = 1;
-        const todayKey = new Date().toISOString
+        const todayKey = new Date().toISOString().split('T')[0];
+
+        function changeQty(amt) {
+            binderQty = Math.max(1, binderQty + amt);
+            document.getElementById('binder-qty-display').textContent = binderQty;
+            document.getElementById('btn-qty-label').textContent = binderQty;
+        }
+
+        function getKClass(k) {
+            if (k < 150) return 'pill-green';
+            if (k <= 200) return 'pill-yellow';
+            return 'pill-red';
+        }
+
+        function getKLabel(k) {
+            if (k < 150) return 'LOW K';
+            if (k <= 200) return 'MED K';
+            return 'HIGH K';
+        }
+
+        function searchFood(query) {
+            const resultsDiv = document.getElementById('search-results');
+            if (query.length < 2) { resultsDiv.classList.add('hidden'); return; }
+            let html = '';
+            Object.values(foodDatabase).flat().forEach(food => {
+                if (food.name.toLowerCase().includes(query.toLowerCase())) {
+                    const kClass = getKClass(food.k);
+                    // Critical Fix: JSON.stringify(food) ensures the full object is passed correctly
+                    html += `<div onclick='logFoodItem(${JSON.stringify(food)})' class="p-3 border-b flex justify-between items-center active:bg-gray-100 cursor-pointer">
+                        <div>
+                            <div class="font-bold text-sm text-gray-800">${food.name}</div>
+                            <div class="text-[10px] text-gray-500">K: ${food.k}mg | P: ${food.p}mg | F: ${food.f}ml</div>
+                        </div>
+                        <span class="text-[9px] font-black px-2 py-1 rounded-full ${kClass}">${getKLabel(food.k)}</span>
+                    </div>`;
+                }
+            });
+            if (html) { resultsDiv.innerHTML = html; resultsDiv.classList.remove('hidden'); }
+            else { resultsDiv.classList.add('hidden'); }
+        }
+
+        function renderCategoryItems(cat) {
+            const list = document.getElementById('category-items-list');
+            list.innerHTML = '';
+            list.classList.remove('hidden');
+            foodDatabase[cat].forEach(food => {
+                const kClass = getKClass(food.k);
+                const kLabel = getKLabel(food.k);
+                const div = document.createElement('div');
+                div.className = "p-3 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100 active:bg-gray-200 cursor-pointer";
+                div.onclick = () => logFoodItem(food);
+                div.innerHTML = `
+                    <div>
+                        <div class="font-bold text-sm text-gray-800">${food.name}</div>
+                        <div class="text-[10px] text-gray-400">P: ${food.p}mg | F: ${food.f}ml</div>
+                    </div>
+                    <span class="text-[9px] font-black px-2 py-1 rounded-full ${kClass}">${kLabel}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function logFoodItem(food) {
+            dailyLog.push({ ...food, type: 'food', id: Date.now() });
+            // UI Resets
+            document.getElementById('food-search').value = '';
+            document.getElementById('search-results').classList.add('hidden');
+            document.getElementById('category-items-list').classList.add('hidden');
+            document.getElementById('category-select').selectedIndex = 0;
+            saveAll();
+        }
+
+        function init() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            Object.keys(foodDatabase).forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; document.getElementById('category-select').appendChild(o); });
+            binderDatabase.forEach((b, i) => { const o = document.createElement('option'); o.value = i; o.textContent = b.name; document.getElementById('binder-select').appendChild(o); });
+            document.getElementById('limit-k').value = limits.k; document.getElementById('limit-p').value = limits.p; document.getElementById('limit-f').value = limits.f;
+            document.getElementById('disp-limit-k').textContent = limits.k; document.getElementById('disp-limit-p').textContent = limits.p; document.getElementById('disp-limit-f').textContent = limits.f;
+            renderLog(); updateTotals();
+        }
+
+        function switchTab(t) {
+            ['food', 'binder', 'history'].forEach(tab => {
+                document.getElementById(`section-${tab}`).classList.toggle('hidden', t !== tab);
+                const btn = document.getElementById(`tab-${tab}`);
+                if(t === tab) { btn.classList.add('bg-white', 'shadow', 'text-gray-800'); btn.classList.remove('text-gray-500'); }
+                else { btn.classList.remove('bg-white', 'shadow', 'text-gray-800'); btn.classList.add('text-gray-500'); }
+            });
+            document.getElementById('section-log').classList.toggle('hidden', t === 'history');
+            if(t === 'history') renderHistory();
+        }
+
+        function checkBinderEnable() { document.getElementById('add-binder-btn').disabled = false; }
+
+        function addBinder() {
+            const b = binderDatabase[document.getElementById('binder-select').value];
+            dailyLog.push({ name: `${binderQty}x ${b.name}`, k: 0, p: -(b.bind * binderQty), f: 0, type: 'binder', id: Date.now() });
+            saveAll();
+            binderQty = 1; document.getElementById('binder-qty-display').textContent = 1; document.getElementById('btn-qty-label').textContent = 1;
+            document.getElementById('binder-select').selectedIndex = 0;
+            document.getElementById('add-binder-btn').disabled = true;
+        }
+
+        function saveAll() {
+            localStorage.setItem('bean_log', JSON.stringify(dailyLog));
+            let tk=0, tp=0, tf=0; dailyLog.forEach(i => { tk+=i.k; tp+=i.p; tf+=i.f; });
+            history[todayKey] = { k: tk, p: Math.max(0, tp), f: tf };
+            localStorage.setItem('bean_history', JSON.stringify(history));
+            renderLog(); updateTotals();
+        }
+
+        function updateTotals() {
+            let tk=0, tp=0, tf=0; dailyLog.forEach(i => { tk+=i.k; tp+=i.p; tf+=i.f; });
+            const netP = Math.max(0, tp);
+            document.getElementById('total-k').textContent = tk;
+            document.getElementById('total-p').textContent = netP;
+            document.getElementById('total-f').textContent = tf;
+            updateBar('bar-k', tk, limits.k); updateBar('bar-p', netP, limits.p); updateBar('bar-f', tf, limits.f);
+        }
+
+        function updateBar(id, v, m) {
+            const pct = Math.min((v/m)*100, 100); const b = document.getElementById(id); b.style.width = pct+'%';
+            b.className = `progress-fill transition-all ${pct >= 100 ? 'bg-red-500' : pct > 80 ? 'bg-yellow-400' : id === 'bar-f' ? 'bg-teal-400' : id === 'bar-k' ? 'bg-blue-500' : 'bg-purple-500'}`;
+        }
+
+        function renderLog() {
+            const list = document.getElementById('log-list'); list.innerHTML = '';
+            if (dailyLog.length === 0) list.innerHTML = '<li class="text-center text-gray-400 py-6 italic text-sm">No entries yet.</li>';
+            dailyLog.slice().reverse().forEach(i => {
+                const li = document.createElement('li');
+                let colorClass = 'bg-white';
+                if (i.type === 'binder') colorClass = 'bg-green-50 border-l-4 border-green-400';
+                else if (i.k < 150) colorClass = 'k-green';
+                else if (i.k <= 200) colorClass = 'k-yellow';
+                else colorClass = 'k-red';
+
+                li.className = `p-3 rounded-xl shadow-sm flex justify-between items-center ${colorClass} mb-2`;
+                li.innerHTML = `<div><div class="font-bold text-sm text-gray-800">${i.type === 'binder' ? '💊 '+i.name : i.name}</div>
+                    <div class="text-[10px] opacity-70 text-gray-600">${i.type === 'food' ? `K: ${i.k} P: ${i.p} F: ${i.f}` : `Binds: ${Math.abs(i.p)}mg P`}</div></div>
+                    <button onclick="removeItem(${i.id})" class="text-gray-400 px-2 text-lg">✕</button>`;
+                list.appendChild(li);
+            });
+        }
+
+        function renderHistory() {
+            const hl = document.getElementById('history-list'); hl.innerHTML = '';
+            const dates = Object.keys(history).sort().reverse().slice(0, 7);
+            dates.forEach(date => {
+                const data = history[date];
+                const div = document.createElement('div');
+                div.className = "bg-white p-3 rounded-xl text-sm border-l-4 border-purple-400 shadow-sm";
+                div.innerHTML = `<div class="font-bold text-gray-400 mb-1">${date === todayKey ? 'Today' : date}</div>
+                    <div class="flex justify-between text-gray-700"><span>K: <b>${data.k}</b></span> <span>P: <b>${data.p}</b></span> <span>F: <b>${data.f}ml</b></span></div>`;
+                hl.appendChild(div);
+            });
+        }
+
+        function exportData() {
+            let report = `BEAN DIALYSIS REPORT\nGenerated: ${new Date().toLocaleString()}\n\n`;
+            Object.keys(history).sort().reverse().slice(0,7).forEach(d => {
+                report += `${d}: K: ${history[d].k}mg, P: ${history[d].p}mg, Fluid: ${history[d].f}ml\n`;
+            });
+            window.location.href = `mailto:?subject=Bean Dialysis Report&body=${encodeURIComponent(report)}`;
+        }
+
+        function removeItem(id) { dailyLog = dailyLog.filter(i => i.id !== id); saveAll(); }
+        function clearToday() { if(confirm("Clear today's entries?")) { dailyLog = []; saveAll(); } }
+        function saveSettings() {
+            limits = { k: parseInt(document.getElementById('limit-k').value) || 2000, p: parseInt(document.getElementById('limit-p').value) || 1000, f: parseInt(document.getElementById('limit-f').value) || 1000 };
+            localStorage.setItem('bean_limits', JSON.stringify(limits));
+            document.getElementById('disp-limit-k').textContent = limits.k; document.getElementById('disp-limit-p').textContent = limits.p; document.getElementById('disp-limit-f').textContent = limits.f;
+            updateTotals();
+        }
+        init();
+    </script>
+</body>
+</html>
 
 
