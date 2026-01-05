@@ -30,15 +30,15 @@
 <body class="pb-24">
 
     <header class="bean-gradient text-white p-6 shadow-lg rounded-b-3xl mb-4 text-center">
-    <div class="flex items-center justify-center space-x-3">
-        <svg class="w-8 h-8 fill-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.5,13.5C19.5,17.09 16.59,20 13,20C10.5,20 8.35,18.59 7.27,16.54C6.44,14.97 6,13.18 6,11.25C6,6.7 9.7,3 14.25,3C15.63,3 16.92,3.34 18.06,3.94C18.92,4.4 19.5,5.28 19.5,6.25V13.5Z" opacity="0.9"/>
-            <path d="M4.5,10.5C4.5,7.5 6.5,5 9,4.22C8.07,5.5 7.5,7.06 7.5,8.75C7.5,12.75 10.75,16 14.75,16C15.7,16 16.6,15.82 17.43,15.47C16.6,18.14 14.03,20 11,20C7.41,20 4.5,17.09 4.5,13.5V10.5Z" />
-        </svg>
-        <h1 class="text-3xl font-bold text-white">Bean</h1>
-    </div>
-    <p class="text-sm opacity-90 text-white mt-1" id="current-date"></p>
-</header>
+        <div class="flex items-center justify-center space-x-3">
+            <svg class="w-8 h-8 fill-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.5,13.5C19.5,17.09 16.59,20 13,20C10.5,20 8.35,18.59 7.27,16.54C6.44,14.97 6,13.18 6,11.25C6,6.7 9.7,3 14.25,3C15.63,3 16.92,3.34 18.06,3.94C18.92,4.4 19.5,5.28 19.5,6.25V13.5Z" opacity="0.9"/>
+                <path d="M4.5,10.5C4.5,7.5 6.5,5 9,4.22C8.07,5.5 7.5,7.06 7.5,8.75C7.5,12.75 10.75,16 14.75,16C15.7,16 16.6,15.82 17.43,15.47C16.6,18.14 14.03,20 11,20C7.41,20 4.5,17.09 4.5,13.5V10.5Z" />
+            </svg>
+            <h1 class="text-3xl font-bold text-white">Bean</h1>
+        </div>
+        <p class="text-sm opacity-90 text-white mt-1" id="current-date"></p>
+    </header>
 
     <main class="max-w-md mx-auto p-4 space-y-6">
 
@@ -93,8 +93,7 @@
                 <option value="" disabled selected>Tap to Choose Category</option>
             </select>
             
-            <div id="category-items-list" class="space-y-2 mt-2 max-h-80 overflow-y-auto hidden">
-                </div>
+            <div id="category-items-list" class="space-y-2 mt-2 max-h-80 overflow-y-auto hidden"></div>
         </section>
 
         <section id="section-binder" class="hidden bg-white p-5 rounded-2xl shadow-sm border-l-4 border-green-400">
@@ -138,7 +137,16 @@
 
     <script>
         const foodDatabase = {
-            "Fruits": [{ name: "Apple", k: 195, p: 20, f: 0 }, { name: "Banana", k: 422, p: 26, f: 0 }, { name: "Grapes (1c)", k: 288, p: 30, f: 0 }, { name: "Watermelon (1c)", k: 170, p: 15, f: 140 }, { name: "Blueberries (1c)", k: 114, p: 18, f: 0 }, { name: "Strawberries (1c)", k: 230, p: 35, f: 0 }, { name: "Peach", k: 179, p: 32.3, f: 0 }, { name: "Pear", k: 187, p: 20, f: 0 }, { name: "Pineapple (1/2c)", k: 113, p: 4, f: 0 }, { name: "Mango (1c)", k: 277, p: 23, f: 0 }, { name: "Orange", k: 255, p: 18, f: 0 }, { name: "Avocado (1c)", k: 708, p: 76, f: 0 }, { name: "Tangerine (Mandarin Orange)", k: 166, p: 20, f: 0 }, { name: "Guava (1c)", k: 688, p: 66, f: 0 }, { name: "Papaya", k: 286, p: 16, f: 0 }, { name: "Cantaloupe (1c)", k: 251, p: 27, f: 0 }],
+            "Fruits": [
+                { name: "Apple", k: 195, p: 20, f: 0 }, { name: "Banana", k: 422, p: 26, f: 0 }, 
+                { name: "Grapes (1c)", k: 288, p: 30, f: 0 }, { name: "Watermelon (1c)", k: 170, p: 15, f: 140 }, 
+                { name: "Blueberries (1c)", k: 114, p: 18, f: 0 }, { name: "Strawberries (1c)", k: 230, p: 35, f: 0 }, 
+                { name: "Peach", k: 179, p: 32.3, f: 0 }, { name: "Pear", k: 187, p: 20, f: 0 }, 
+                { name: "Pineapple (1/2c)", k: 113, p: 4, f: 0 }, { name: "Mango (1c)", k: 277, p: 23, f: 0 }, 
+                { name: "Orange", k: 255, p: 18, f: 0 }, { name: "Avocado (1c)", k: 708, p: 76, f: 0 }, 
+                { name: "Tangerine (Mandarin)", k: 166, p: 20, f: 0 }, { name: "Guava (1c)", k: 688, p: 66, f: 0 }, 
+                { name: "Papaya", k: 286, p: 16, f: 0 }, { name: "Cantaloupe (1c)", k: 251, p: 27, f: 0 }
+            ],
             "Vegetables": [{ name: "Carrots", k: 180, p: 24, f: 0 }, { name: "Potato (Med)", k: 926, p: 121, f: 0 }, { name: "Green Beans", k: 90, p: 19, f: 0 }, { name: "Cucumber", k: 140, p: 20, f: 50 }, { name: "Broccoli (1c)", k: 290, p: 60, f: 0 }],
             "Proteins": [{ name: "Chicken (3oz)", k: 220, p: 196, f: 0 }, { name: "Egg (1)", k: 69, p: 95, f: 0 }, { name: "Salmon (3oz)", k: 326, p: 214, f: 0 }, { name: "Beef (3oz)", k: 270, p: 200, f: 0 }, { name: "Tofu (1/2c)", k: 120, p: 120, f: 0 }],
             "Dairy/Grains": [{ name: "Milk (1c)", k: 366, p: 232, f: 240 }, { name: "Rice (1c)", k: 55, p: 68, f: 0 }, { name: "White Bread", k: 30, p: 30, f: 0 }, { name: "Pasta (1c)", k: 60, p: 80, f: 0 }],
@@ -330,7 +338,6 @@
     </script>
 </body>
 </html>
-
 
 
 
