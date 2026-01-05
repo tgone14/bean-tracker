@@ -87,7 +87,7 @@
                 <option value="" disabled selected>Tap to Choose Category</option>
             </select>
             
-            <div id="category-items-list" class="space-y-2 mt-2 max-h-64 overflow-y-auto hidden">
+            <div id="category-items-list" class="space-y-2 mt-2 max-h-80 overflow-y-auto hidden">
                 </div>
         </section>
 
@@ -176,7 +176,6 @@
             Object.values(foodDatabase).flat().forEach(food => {
                 if (food.name.toLowerCase().includes(query.toLowerCase())) {
                     const kClass = getKClass(food.k);
-                    // Critical Fix: JSON.stringify(food) ensures the full object is passed correctly
                     html += `<div onclick='logFoodItem(${JSON.stringify(food)})' class="p-3 border-b flex justify-between items-center active:bg-gray-100 cursor-pointer">
                         <div>
                             <div class="font-bold text-sm text-gray-800">${food.name}</div>
@@ -203,7 +202,7 @@
                 div.innerHTML = `
                     <div>
                         <div class="font-bold text-sm text-gray-800">${food.name}</div>
-                        <div class="text-[10px] text-gray-400">P: ${food.p}mg | F: ${food.f}ml</div>
+                        <div class="text-[10px] text-gray-500">K: ${food.k}mg | P: ${food.p}mg | F: ${food.f}ml</div>
                     </div>
                     <span class="text-[9px] font-black px-2 py-1 rounded-full ${kClass}">${kLabel}</span>
                 `;
@@ -213,7 +212,6 @@
 
         function logFoodItem(food) {
             dailyLog.push({ ...food, type: 'food', id: Date.now() });
-            // UI Resets
             document.getElementById('food-search').value = '';
             document.getElementById('search-results').classList.add('hidden');
             document.getElementById('category-items-list').classList.add('hidden');
