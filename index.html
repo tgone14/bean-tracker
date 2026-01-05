@@ -11,17 +11,27 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
-        .bean-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .progress-bar-bg { background-color: #e5e7eb; border-radius: 9999px; height: 1.2rem; overflow: hidden; }
-        .progress-fill { height: 100%; transition: width 0.5s ease-in-out; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+        
+        /* Updated Gradient to match Nano Banana image */
+        .bean-gradient { background: linear-gradient(135deg, #7c9aff 0%, #a881e6 100%); }
+        
+        .progress-bar-bg { background-color: #f1f5f9; border-radius: 9999px; height: 0.5rem; overflow: hidden; }
+        .progress-fill { height: 100%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        
         input, select { font-size: 16px !important; } 
         .search-results { max-height: 300px; overflow-y: auto; z-index: 50; }
         
+        .card { background: white; border-radius: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
+        
+        /* Dashboard Label Styling */
+        .label-text { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.025em; }
+        .value-text { font-size: 0.75rem; font-weight: 700; color: #1e293b; }
+
         /* Traffic Light Colors */
-        .k-green { background-color: #dcfce7; color: #166534; border-left: 4px solid #22c55e; }
-        .k-yellow { background-color: #fef9c3; color: #854d0e; border-left: 4px solid #eab308; }
-        .k-red { background-color: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .k-green { background-color: #f0fdf4; border-left: 4px solid #22c55e; }
+        .k-yellow { background-color: #fefce8; border-left: 4px solid #eab308; }
+        .k-red { background-color: #fef2f2; border-left: 4px solid #ef4444; }
         .pill-green { background: #22c55e; color: white; }
         .pill-yellow { background: #eab308; color: white; }
         .pill-red { background: #ef4444; color: white; }
@@ -29,113 +39,111 @@
 </head>
 <body class="pb-24">
 
-    <header class="bean-gradient text-white p-6 shadow-lg rounded-b-3xl mb-4 text-center">
-        <div class="flex items-center justify-center space-x-3">
-            <svg class="w-8 h-8 fill-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19.5,13.5C19.5,17.09 16.59,20 13,20C10.5,20 8.35,18.59 7.27,16.54C6.44,14.97 6,13.18 6,11.25C6,6.7 9.7,3 14.25,3C15.63,3 16.92,3.34 18.06,3.94C18.92,4.4 19.5,5.28 19.5,6.25V13.5Z" opacity="0.9"/>
-                <path d="M4.5,10.5C4.5,7.5 6.5,5 9,4.22C8.07,5.5 7.5,7.06 7.5,8.75C7.5,12.75 10.75,16 14.75,16C15.7,16 16.6,15.82 17.43,15.47C16.6,18.14 14.03,20 11,20C7.41,20 4.5,17.09 4.5,13.5V10.5Z" />
+    <header class="bean-gradient text-white pt-12 pb-10 px-6 shadow-md rounded-b-[40px] mb-6 text-center">
+        <div class="flex items-center justify-center space-x-3 mb-2">
+            <svg class="w-10 h-10 drop-shadow-md" viewBox="0 0 100 100" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M75,50 c0,15 -12,28 -25,28 c-10,0 -18,-6 -22,-14 c-3,-6 -5,-13 -5,-21 c0,-19 15,-34 34,-34 c6,0 11,1 16,4 c4,2 6,6 6,10 V50z" opacity="0.9"/>
+                <path d="M25,45 c0,-12 8,-22 19,-25 c-4,5 -6,11 -6,18 c0,16 13,29 29,29 c4,0 8,-1 11,-2 c-3,11 -13,19 -25,19 c-15,0 -28,-12 -28,-28 V45z" />
             </svg>
-            <h1 class="text-3xl font-bold text-white">Bean</h1>
+            <h1 class="text-5xl font-extrabold tracking-tight">Bean</h1>
         </div>
-        <p class="text-sm opacity-90 text-white mt-1" id="current-date"></p>
+        <p class="text-sm font-medium opacity-80" id="current-date"></p>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-6">
 
-        <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h2 class="text-lg font-bold text-gray-700">Net Daily Intake</h2>
-                <button onclick="exportData()" class="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-bold">📄 Export</button>
+        <section class="card p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Net Daily Intake</h2>
+                <button onclick="exportData()" class="text-[10px] bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-bold uppercase">Export</button>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-600">Potassium (K)</span>
-                        <span class="font-bold text-gray-800"><span id="total-k">0</span> / <span id="disp-limit-k">2000</span> mg</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="label-text">Potassium</span>
+                        <span class="value-text"><span id="total-k">0</span> / <span id="disp-limit-k">2000</span> mg</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-k" class="progress-fill bg-blue-500" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-k" class="progress-fill bg-emerald-400" style="width: 0%"></div></div>
                 </div>
                 <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-600">Net Phosphorus (P)</span>
-                        <span class="font-bold text-gray-800"><span id="total-p">0</span> / <span id="disp-limit-p">1000</span> mg</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="label-text">Net Phosphorus</span>
+                        <span class="value-text"><span id="total-p">0</span> / <span id="disp-limit-p">1000</span> mg</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-p" class="progress-fill bg-purple-500" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-p" class="progress-fill bg-violet-400" style="width: 0%"></div></div>
                 </div>
                 <div>
-                    <div class="flex justify-between text-sm mb-1">
-                        <span class="font-medium text-gray-600">Fluid</span>
-                        <span class="font-bold text-gray-800"><span id="total-f">0</span> / <span id="disp-limit-f">1000</span> ml</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="label-text">Fluid</span>
+                        <span class="value-text"><span id="total-f">0</span> / <span id="disp-limit-f">1000</span> ml</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-f" class="progress-fill bg-teal-400" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-f" class="progress-fill bg-sky-400" style="width: 0%"></div></div>
                 </div>
             </div>
         </section>
 
-        <div class="flex space-x-1 bg-gray-200 p-1 rounded-xl">
-            <button onclick="switchTab('food')" id="tab-food" class="flex-1 py-2 rounded-lg font-bold text-sm bg-white shadow text-gray-800">🍎 Food</button>
-            <button onclick="switchTab('binder')" id="tab-binder" class="flex-1 py-2 rounded-lg font-bold text-sm text-gray-500">💊 Binder</button>
-            <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-2 rounded-lg font-bold text-sm text-gray-500">📜 History</button>
+        <div class="flex space-x-1 bg-slate-200/50 p-1.5 rounded-2xl">
+            <button onclick="switchTab('food')" id="tab-food" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-white shadow-sm text-slate-800 transition-all">Food</button>
+            <button onclick="switchTab('binder')" id="tab-binder" class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-500 transition-all">Binder</button>
+            <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-2.5 rounded-xl font-bold text-sm text-slate-500 transition-all">History</button>
         </div>
 
-        <section id="section-food" class="bg-white p-5 rounded-2xl shadow-sm space-y-3">
+        <section id="section-food" class="card p-5 space-y-4">
             <div class="relative">
-                <input type="text" id="food-search" placeholder="Quick Search..." 
-                    class="w-full p-3 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-purple-400 outline-none"
+                <input type="text" id="food-search" placeholder="Search foods..." 
+                    class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-purple-300 outline-none transition-all placeholder:text-slate-400"
                     oninput="searchFood(this.value)">
-                <div id="search-results" class="search-results hidden absolute z-10 w-full bg-white border rounded-xl mt-1 shadow-2xl"></div>
+                <div id="search-results" class="search-results hidden absolute z-10 w-full bg-white border rounded-2xl mt-2 shadow-xl border-slate-100 overflow-hidden"></div>
             </div>
             
-            <div class="text-center text-[10px] text-gray-300 font-bold uppercase tracking-widest">or browse categories</div>
-            
-            <select id="category-select" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" onchange="renderCategoryItems(this.value)">
-                <option value="" disabled selected>Tap to Choose Category</option>
+            <select id="category-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-semibold text-slate-700 outline-none" onchange="renderCategoryItems(this.value)">
+                <option value="" disabled selected>Browse Categories</option>
             </select>
             
             <div id="category-items-list" class="space-y-2 mt-2 max-h-80 overflow-y-auto hidden"></div>
         </section>
 
-        <section id="section-binder" class="hidden bg-white p-5 rounded-2xl shadow-sm border-l-4 border-green-400">
-            <div class="space-y-4 text-center">
-                <select id="binder-select" class="w-full p-3 bg-gray-50 border rounded-xl text-sm" onchange="checkBinderEnable()">
-                    <option value="" disabled selected>Select Binder</option>
+        <section id="section-binder" class="hidden card p-6 text-center">
+            <div class="space-y-6">
+                <select id="binder-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-semibold text-slate-700" onchange="checkBinderEnable()">
+                    <option value="" disabled selected>Select Binder Type</option>
                 </select>
                 
-                <div class="flex items-center justify-center space-x-6 py-2">
-                    <button onclick="changeQty(-1)" class="w-12 h-12 rounded-full border-2 border-green-500 text-green-500 text-2xl font-bold flex items-center justify-center active:bg-green-100">-</button>
-                    <span id="binder-qty-display" class="text-3xl font-black text-gray-700 w-8">1</span>
-                    <button onclick="changeQty(1)" class="w-12 h-12 rounded-full border-2 border-green-500 text-green-500 text-2xl font-bold flex items-center justify-center active:bg-green-100">+</button>
+                <div class="flex items-center justify-center space-x-8 py-4">
+                    <button onclick="changeQty(-1)" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 text-2xl font-bold flex items-center justify-center active:scale-95 transition-transform">-</button>
+                    <span id="binder-qty-display" class="text-4xl font-black text-slate-700 w-10">1</span>
+                    <button onclick="changeQty(1)" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 text-2xl font-bold flex items-center justify-center active:scale-95 transition-transform">+</button>
                 </div>
 
-                <button onclick="addBinder()" id="add-binder-btn" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl disabled:opacity-50" disabled>Add <span id="btn-qty-label">1</span> Binder(s)</button>
+                <button onclick="addBinder()" id="add-binder-btn" class="w-full bg-slate-800 text-white font-bold py-5 rounded-2xl shadow-lg active:scale-[0.98] transition-all disabled:opacity-20" disabled>Add <span id="btn-qty-label">1</span> Binder(s)</button>
             </div>
         </section>
 
-        <section id="section-history" class="hidden space-y-3">
-            <h2 class="text-gray-600 font-bold px-1 text-center">Past 7 Days</h2>
-            <div id="history-list" class="space-y-2"></div>
+        <section id="section-history" class="hidden space-y-4">
+            <div id="history-list" class="space-y-3"></div>
         </section>
 
         <section id="section-log">
-            <div class="flex justify-between items-center mb-3 px-1">
-                <h2 class="text-lg font-semibold text-gray-700">Today's Entries</h2>
-                <button onclick="clearToday()" class="text-xs text-red-400 font-bold uppercase">Reset</button>
+            <div class="flex justify-between items-end mb-4 px-2">
+                <h2 class="text-xl font-bold text-slate-800">Today</h2>
+                <button onclick="clearToday()" class="text-[10px] text-red-400 font-black uppercase tracking-widest">Clear All</button>
             </div>
-            <ul id="log-list" class="space-y-2"></ul>
+            <ul id="log-list" class="space-y-3"></ul>
         </section>
 
-        <details class="bg-gray-100 p-4 rounded-xl">
-            <summary class="text-sm font-bold text-gray-500 cursor-pointer">⚙️ Settings & Limits</summary>
-            <div class="grid grid-cols-3 gap-2 mt-3 text-center">
-                <div><label class="text-[9px] font-bold text-gray-400 uppercase">K (mg)</label><input type="number" id="limit-k" class="w-full p-2 border rounded-lg text-sm" onchange="saveSettings()"></div>
-                <div><label class="text-[9px] font-bold text-gray-400 uppercase">P (mg)</label><input type="number" id="limit-p" class="w-full p-2 border rounded-lg text-sm" onchange="saveSettings()"></div>
-                <div><label class="text-[9px] font-bold text-gray-400 uppercase">Fluid (mL)</label><input type="number" id="limit-f" class="w-full p-2 border rounded-lg text-sm" onchange="saveSettings()"></div>
+        <details class="bg-slate-100 p-4 rounded-3xl border border-slate-200">
+            <summary class="text-xs font-bold text-slate-500 cursor-pointer list-none text-center uppercase tracking-widest">Adjust Limits</summary>
+            <div class="grid grid-cols-3 gap-3 mt-4">
+                <div><label class="label-text block mb-1 text-center">K</label><input type="number" id="limit-k" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700" onchange="saveSettings()"></div>
+                <div><label class="label-text block mb-1 text-center">P</label><input type="number" id="limit-p" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700" onchange="saveSettings()"></div>
+                <div><label class="label-text block mb-1 text-center">Fluid</label><input type="number" id="limit-f" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700" onchange="saveSettings()"></div>
             </div>
         </details>
     </main>
 
     <script>
+        // Database same as before
         const foodDatabase = {
             "Fruits": [
                 { name: "Apple", k: 195, p: 20, f: 0 }, { name: "Banana", k: 422, p: 26, f: 0 }, 
@@ -177,12 +185,6 @@
             return 'pill-red';
         }
 
-        function getKLabel(k) {
-            if (k < 150) return 'LOW K';
-            if (k <= 200) return 'MED K';
-            return 'HIGH K';
-        }
-
         function searchFood(query) {
             const resultsDiv = document.getElementById('search-results');
             if (query.length < 2) { resultsDiv.classList.add('hidden'); return; }
@@ -190,12 +192,12 @@
             Object.values(foodDatabase).flat().forEach(food => {
                 if (food.name.toLowerCase().includes(query.toLowerCase())) {
                     const kClass = getKClass(food.k);
-                    html += `<div onclick='logFoodItem(${JSON.stringify(food)})' class="p-3 border-b flex justify-between items-center active:bg-gray-100 cursor-pointer">
+                    html += `<div onclick='logFoodItem(${JSON.stringify(food)})' class="p-4 border-b border-slate-50 flex justify-between items-center active:bg-slate-50 cursor-pointer">
                         <div>
-                            <div class="font-bold text-sm text-gray-800">${food.name}</div>
-                            <div class="text-[10px] text-gray-500">K: ${food.k}mg | P: ${food.p}mg | F: ${food.f}ml</div>
+                            <div class="font-bold text-sm text-slate-800">${food.name}</div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">K: ${food.k}mg | P: ${food.p}mg</div>
                         </div>
-                        <span class="text-[9px] font-black px-2 py-1 rounded-full ${kClass}">${getKLabel(food.k)}</span>
+                        <div class="w-2 h-2 rounded-full ${kClass === 'pill-green' ? 'bg-emerald-400' : kClass === 'pill-yellow' ? 'bg-amber-400' : 'bg-rose-400'}"></div>
                     </div>`;
                 }
             });
@@ -208,17 +210,15 @@
             list.innerHTML = '';
             list.classList.remove('hidden');
             foodDatabase[cat].forEach(food => {
-                const kClass = getKClass(food.k);
-                const kLabel = getKLabel(food.k);
                 const div = document.createElement('div');
-                div.className = "p-3 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100 active:bg-gray-200 cursor-pointer";
+                div.className = "p-4 bg-slate-50 rounded-2xl flex justify-between items-center active:scale-[0.98] transition-all cursor-pointer";
                 div.onclick = () => logFoodItem(food);
                 div.innerHTML = `
                     <div>
-                        <div class="font-bold text-sm text-gray-800">${food.name}</div>
-                        <div class="text-[10px] text-gray-500">K: ${food.k}mg | P: ${food.p}mg | F: ${food.f}ml</div>
+                        <div class="font-bold text-sm text-slate-800">${food.name}</div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">K: ${food.k}mg | P: ${food.p}mg</div>
                     </div>
-                    <span class="text-[9px] font-black px-2 py-1 rounded-full ${kClass}">${kLabel}</span>
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center bg-white shadow-sm text-xs text-slate-400">+</div>
                 `;
                 list.appendChild(div);
             });
@@ -246,8 +246,8 @@
             ['food', 'binder', 'history'].forEach(tab => {
                 document.getElementById(`section-${tab}`).classList.toggle('hidden', t !== tab);
                 const btn = document.getElementById(`tab-${tab}`);
-                if(t === tab) { btn.classList.add('bg-white', 'shadow', 'text-gray-800'); btn.classList.remove('text-gray-500'); }
-                else { btn.classList.remove('bg-white', 'shadow', 'text-gray-800'); btn.classList.add('text-gray-500'); }
+                if(t === tab) { btn.classList.add('bg-white', 'shadow-sm', 'text-slate-800'); btn.classList.remove('text-slate-500'); }
+                else { btn.classList.remove('bg-white', 'shadow-sm', 'text-slate-800'); btn.classList.add('text-slate-500'); }
             });
             document.getElementById('section-log').classList.toggle('hidden', t === 'history');
             if(t === 'history') renderHistory();
@@ -283,24 +283,24 @@
 
         function updateBar(id, v, m) {
             const pct = Math.min((v/m)*100, 100); const b = document.getElementById(id); b.style.width = pct+'%';
-            b.className = `progress-fill transition-all ${pct >= 100 ? 'bg-red-500' : pct > 80 ? 'bg-yellow-400' : id === 'bar-f' ? 'bg-teal-400' : id === 'bar-k' ? 'bg-blue-500' : 'bg-purple-500'}`;
+            if(pct >= 100) b.classList.add('bg-rose-500');
         }
 
         function renderLog() {
             const list = document.getElementById('log-list'); list.innerHTML = '';
-            if (dailyLog.length === 0) list.innerHTML = '<li class="text-center text-gray-400 py-6 italic text-sm">No entries yet.</li>';
+            if (dailyLog.length === 0) list.innerHTML = '<li class="text-center text-slate-300 py-10 italic text-sm">No entries yet.</li>';
             dailyLog.slice().reverse().forEach(i => {
                 const li = document.createElement('li');
                 let colorClass = 'bg-white';
-                if (i.type === 'binder') colorClass = 'bg-green-50 border-l-4 border-green-400';
+                if (i.type === 'binder') colorClass = 'bg-slate-800 text-white';
                 else if (i.k < 150) colorClass = 'k-green';
                 else if (i.k <= 200) colorClass = 'k-yellow';
                 else colorClass = 'k-red';
 
-                li.className = `p-3 rounded-xl shadow-sm flex justify-between items-center ${colorClass} mb-2`;
-                li.innerHTML = `<div><div class="font-bold text-sm text-gray-800">${i.type === 'binder' ? '💊 '+i.name : i.name}</div>
-                    <div class="text-[10px] opacity-70 text-gray-600">${i.type === 'food' ? `K: ${i.k} P: ${i.p} F: ${i.f}` : `Binds: ${Math.abs(i.p)}mg P`}</div></div>
-                    <button onclick="removeItem(${i.id})" class="text-gray-400 px-2 text-lg">✕</button>`;
+                li.className = `p-4 rounded-3xl shadow-sm flex justify-between items-center ${colorClass} transition-all`;
+                li.innerHTML = `<div><div class="font-bold text-sm">${i.type === 'binder' ? '💊 '+i.name : i.name}</div>
+                    <div class="text-[10px] opacity-60 font-bold uppercase tracking-widest">${i.type === 'food' ? `K: ${i.k} P: ${i.p} F: ${i.f}` : `Binds: ${Math.abs(i.p)}mg P`}</div></div>
+                    <button onclick="removeItem(${i.id})" class="opacity-30 px-2 text-lg">✕</button>`;
                 list.appendChild(li);
             });
         }
@@ -311,9 +311,9 @@
             dates.forEach(date => {
                 const data = history[date];
                 const div = document.createElement('div');
-                div.className = "bg-white p-3 rounded-xl text-sm border-l-4 border-purple-400 shadow-sm";
-                div.innerHTML = `<div class="font-bold text-gray-400 mb-1">${date === todayKey ? 'Today' : date}</div>
-                    <div class="flex justify-between text-gray-700"><span>K: <b>${data.k}</b></span> <span>P: <b>${data.p}</b></span> <span>F: <b>${data.f}ml</b></span></div>`;
+                div.className = "card p-5 text-sm";
+                div.innerHTML = `<div class="label-text mb-2">${date === todayKey ? 'Today' : date}</div>
+                    <div class="flex justify-between font-bold text-slate-700"><span>K: ${data.k}</span> <span>P: ${data.p}</span> <span>F: ${data.f}ml</span></div>`;
                 hl.appendChild(div);
             });
         }
@@ -338,7 +338,6 @@
     </script>
 </body>
 </html>
-
 
 
 
