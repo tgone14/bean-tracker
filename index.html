@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bean - Dialysis Tracker</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3594/3594041.png">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
@@ -19,11 +15,11 @@
         .label-text { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.025em; }
         .value-text { font-size: 0.75rem; font-weight: 700; color: #1e293b; }
         
-        /* Phosphorus-based Traffic Lights (Excluding Proteins) */
+        /* Phosphorus Traffic Lights */
         .p-green { background-color: #f0fdf4; border-left: 4px solid #22c55e; }
         .p-yellow { background-color: #fefce8; border-left: 4px solid #eab308; }
         .p-red { background-color: #fef2f2; border-left: 4px solid #ef4444; }
-        .p-neutral { background-color: #f8fafc; border-left: 4px solid #cbd5e1; } /* For Proteins/Binders */
+        .p-neutral { background-color: #f8fafc; border-left: 4px solid #cbd5e1; }
     </style>
 </head>
 <body class="pb-24">
@@ -47,39 +43,24 @@
                         <span class="label-text">Potassium</span>
                         <span class="value-text"><span id="total-k">0</span> / <span id="disp-limit-k">2000</span> mg</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-k" class="progress-fill bg-emerald-400" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-k" class="progress-fill" style="width: 0%; background-color: #34d399;"></div></div>
                 </div>
                 <div>
                     <div class="flex justify-between mb-2">
                         <span class="label-text">Net Phosphorus</span>
                         <span class="value-text"><span id="total-p">0</span> / <span id="disp-limit-p">1000</span> mg</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-p" class="progress-fill bg-violet-400" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-p" class="progress-fill" style="width: 0%; background-color: #a78bfa;"></div></div>
                 </div>
                 <div>
                     <div class="flex justify-between mb-2">
                         <span class="label-text">Fluid</span>
                         <span class="value-text"><span id="total-f">0</span> / <span id="disp-limit-f">1000</span> ml</span>
                     </div>
-                    <div class="progress-bar-bg"><div id="bar-f" class="progress-fill bg-sky-400" style="width: 0%"></div></div>
+                    <div class="progress-bar-bg"><div id="bar-f" class="progress-fill" style="width: 0%; background-color: #38bdf8;"></div></div>
                 </div>
             </div>
         </section>
-
-        <div class="grid grid-cols-3 gap-3">
-            <button onclick="quickLog('Breakfast')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 text-center active:scale-95 transition-all">
-                <div class="text-xl mb-1">🍳</div>
-                <div class="text-[10px] font-bold text-slate-500 uppercase">Breakfast</div>
-            </button>
-            <button onclick="quickLog('Lunch')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 text-center active:scale-95 transition-all">
-                <div class="text-xl mb-1">🥪</div>
-                <div class="text-[10px] font-bold text-slate-500 uppercase">Lunch</div>
-            </button>
-            <button onclick="quickLog('Dinner')" class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 text-center active:scale-95 transition-all">
-                <div class="text-xl mb-1">🍛</div>
-                <div class="text-[10px] font-bold text-slate-500 uppercase">Dinner</div>
-            </button>
-        </div>
 
         <div class="flex space-x-1 bg-slate-200/50 p-1.5 rounded-2xl">
             <button onclick="switchTab('food')" id="tab-food" class="flex-1 py-2.5 rounded-xl font-bold text-sm bg-white shadow-sm text-slate-800 transition-all">Food</button>
@@ -88,8 +69,15 @@
         </div>
 
         <section id="section-food" class="card p-5 space-y-4">
-            <input type="text" id="food-search" placeholder="Search foods..." class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none" oninput="searchFood(this.value)">
-            <div id="search-results" class="search-results hidden absolute z-20 w-[90%] bg-white border rounded-2xl shadow-xl max-h-64 overflow-y-auto"></div>
+            <div class="relative">
+                <input type="text" id="food-search" placeholder="Search foods (e.g. Apple, Chicken)..." 
+                    class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-200" 
+                    onkeyup="searchFood(this.value)">
+                <div id="search-results" class="hidden absolute z-30 w-full bg-white border rounded-2xl shadow-2xl mt-2 max-h-72 overflow-y-auto"></div>
+            </div>
+            
+            <div class="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">— OR —</div>
+            
             <select id="category-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-semibold" onchange="renderCategoryItems(this.value)">
                 <option value="" disabled selected>Browse Categories</option>
             </select>
@@ -97,7 +85,15 @@
         </section>
 
         <section id="section-binder" class="hidden card p-6 text-center">
-            <select id="binder-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm mb-4" onchange="checkBinderEnable()"></select>
+            <select id="binder-select" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm mb-4" onchange="checkBinderEnable()">
+                <option value="" disabled selected>Select Binder Type</option>
+                <option value="0">Renvela/Sevelamer (800mg)</option>
+                <option value="1">Phoslo/Calcium Acetate (667mg)</option>
+                <option value="2">Tums/Calcium Carbonate (500mg)</option>
+                <option value="3">Velphoro (500mg)</option>
+                <option value="4">Auryxia (210mg Iron)</option>
+                <option value="5">Fosrenol/Lanthanum (500mg)</option>
+            </select>
             <div class="flex items-center justify-center space-x-8 py-4">
                 <button onclick="changeQty(-1)" class="w-14 h-14 rounded-2xl bg-slate-100 text-2xl font-bold">-</button>
                 <span id="binder-qty-display" class="text-4xl font-black w-10">1</span>
@@ -112,46 +108,35 @@
 
         <section id="section-log">
             <div class="flex justify-between items-end mb-4 px-2">
-                <h2 class="text-xl font-bold text-slate-800">Today</h2>
-                <button onclick="clearToday()" class="text-[10px] text-red-400 font-black uppercase">Clear All</button>
+                <h2 class="text-xl font-bold text-slate-800">Today's Entries</h2>
+                <button onclick="clearToday()" class="text-[10px] text-red-400 font-black uppercase">Reset</button>
             </div>
             <ul id="log-list" class="space-y-3"></ul>
         </section>
 
         <section class="bg-slate-100 p-6 rounded-[32px] border border-slate-200">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest text-center mb-4">Your Daily Goals</h3>
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest text-center mb-4">Set Your Limits</h3>
             <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <label class="label-text block text-center mb-1">K (mg)</label>
-                    <input type="number" id="limit-k" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-200" onchange="saveSettings()">
-                </div>
-                <div>
-                    <label class="label-text block text-center mb-1">P (mg)</label>
-                    <input type="number" id="limit-p" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-200" onchange="saveSettings()">
-                </div>
-                <div>
-                    <label class="label-text block text-center mb-1">Fluid (ml)</label>
-                    <input type="number" id="limit-f" class="w-full p-3 bg-white rounded-xl text-center font-bold text-slate-700 outline-none focus:ring-2 focus:ring-purple-200" onchange="saveSettings()">
-                </div>
+                <div><label class="label-text block text-center mb-1">K</label><input type="number" id="limit-k" class="w-full p-3 bg-white rounded-xl text-center font-bold" onchange="saveSettings()"></div>
+                <div><label class="label-text block text-center mb-1">P</label><input type="number" id="limit-p" class="w-full p-3 bg-white rounded-xl text-center font-bold" onchange="saveSettings()"></div>
+                <div><label class="label-text block text-center mb-1">Fluid</label><input type="number" id="limit-f" class="w-full p-3 bg-white rounded-xl text-center font-bold" onchange="saveSettings()"></div>
             </div>
         </section>
     </main>
 
     <script>
-        const quickMeals = {
-            "Breakfast": { name: "Quick Breakfast", k: 350, p: 40, f: 120, category: "Quick" },
-            "Lunch": { name: "Quick Lunch", k: 450, p: 120, f: 240, category: "Quick" },
-            "Dinner": { name: "Quick Dinner", k: 500, p: 200, f: 120, category: "Quick" }
-        };
-
         const foodDatabase = {
-            "Fruits": [{ name: "Apple", k: 195, p: 20, f: 0 }, { name: "Banana", k: 422, p: 26, f: 0 }, { name: "Watermelon", k: 170, p: 15, f: 140 }],
-            "Vegetables": [{ name: "Carrots", k: 180, p: 24, f: 0 }, { name: "Green Beans", k: 90, p: 19, f: 0 }],
-            "Proteins": [{ name: "Chicken (3oz)", k: 220, p: 196, f: 0 }, { name: "Egg (1)", k: 69, p: 95, f: 0 }, { name: "Beef (3oz)", k: 270, p: 200, f: 0 }],
-            "Beverages": [{ name: "Water (8oz)", k: 0, p: 0, f: 240 }, { name: "Coffee (8oz)", k: 116, p: 7, f: 240 }]
+            "Fruits": [{ name: "Apple", k: 195, p: 20, f: 0 }, { name: "Banana", k: 422, p: 26, f: 0 }, { name: "Watermelon", k: 170, p: 15, f: 140 }, { name: "Blueberries (1c)", k: 114, p: 18, f: 0 }, { name: "Strawberries (1c)", k: 230, p: 35, f: 0 }],
+            "Vegetables": [{ name: "Carrots", k: 180, p: 24, f: 0 }, { name: "Green Beans", k: 90, p: 19, f: 0 }, { name: "Potato (Med)", k: 926, p: 121, f: 0 }, { name: "Cucumber", k: 140, p: 20, f: 50 }],
+            "Proteins": [{ name: "Chicken (3oz)", k: 220, p: 196, f: 0 }, { name: "Egg (1)", k: 69, p: 95, f: 0 }, { name: "Beef (3oz)", k: 270, p: 200, f: 0 }, { name: "Salmon (3oz)", k: 326, p: 214, f: 0 }],
+            "Beverages": [{ name: "Water (8oz)", k: 0, p: 0, f: 240 }, { name: "Coffee (8oz)", k: 116, p: 7, f: 240 }, { name: "Cola (12oz)", k: 0, p: 40, f: 355 }]
         };
 
-        const binderDatabase = [{ name: "Calcium Carbonate (500mg)", bind: 19 }, { name: "Sevelamer HCl (800mg)", bind: 17 }];
+        const binderDatabase = [
+            { name: "Renvela/Sevelamer", bind: 17 }, { name: "Phoslo/Calcium Acetate", bind: 30 },
+            { name: "Tums/Calcium Carbonate", bind: 19 }, { name: "Velphoro", bind: 130 },
+            { name: "Auryxia", bind: 40 }, { name: "Fosrenol", bind: 45 }
+        ];
 
         let dailyLog = JSON.parse(localStorage.getItem('bean_log')) || [];
         let limits = JSON.parse(localStorage.getItem('bean_limits')) || { k: 2000, p: 1000, f: 1000 };
@@ -159,80 +144,48 @@
         let binderQty = 1;
         const todayKey = new Date().toISOString().split('T')[0];
 
-        function getPColorClass(p, category) {
-            // Proteins are exempt from phosphorus traffic light colors
-            if (category === "Proteins" || category === "Binder") return "p-neutral";
-            
-            if (p <= 50) return "p-green";
-            if (p <= 150) return "p-yellow";
-            return "p-red";
-        }
-
-        function quickLog(mealType) {
-            logFoodItem(quickMeals[mealType], "Quick");
-        }
-
-        function saveSettings() {
-            limits = {
-                k: parseInt(document.getElementById('limit-k').value) || 2000,
-                p: parseInt(document.getElementById('limit-p').value) || 1000,
-                f: parseInt(document.getElementById('limit-f').value) || 1000
-            };
-            localStorage.setItem('bean_limits', JSON.stringify(limits));
-            document.getElementById('disp-limit-k').textContent = limits.k;
-            document.getElementById('disp-limit-p').textContent = limits.p;
-            document.getElementById('disp-limit-f').textContent = limits.f;
-            updateTotals();
-        }
-
         function searchFood(query) {
             const resultsDiv = document.getElementById('search-results');
-            if (query.length < 2) { resultsDiv.classList.add('hidden'); return; }
+            if (query.length < 1) { resultsDiv.classList.add('hidden'); return; }
+            
             let html = '';
-            // Flatten database to search all categories
             for (const [category, foods] of Object.entries(foodDatabase)) {
                 foods.forEach(food => {
                     if (food.name.toLowerCase().includes(query.toLowerCase())) {
-                        html += `<div onclick='logFoodItem(${JSON.stringify(food)}, "${category}")' class="p-4 border-b active:bg-slate-50 cursor-pointer">
-                            <div class="font-bold text-sm text-slate-800">${food.name}</div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase">K: ${food.k} | P: ${food.p}</div></div>`;
+                        html += `<div onclick='logFoodItem(${JSON.stringify(food)}, "${category}")' class="p-4 border-b hover:bg-slate-50 cursor-pointer flex justify-between">
+                            <span class="font-bold text-slate-700">${food.name}</span>
+                            <span class="text-[10px] text-slate-400">${category}</span>
+                        </div>`;
                     }
                 });
             }
-            resultsDiv.innerHTML = html;
-            resultsDiv.classList.remove('hidden');
-        }
-
-        function renderCategoryItems(cat) {
-            const list = document.getElementById('category-items-list');
-            list.innerHTML = '';
-            list.classList.remove('hidden');
-            foodDatabase[cat].forEach(food => {
-                const div = document.createElement('div');
-                div.className = "p-4 bg-slate-50 rounded-2xl flex justify-between items-center active:scale-[0.98] transition-all cursor-pointer";
-                div.onclick = () => logFoodItem(food, cat);
-                div.innerHTML = `<div class="font-bold text-sm text-slate-800">${food.name}</div><div class="w-6 h-6 rounded-full flex items-center justify-center bg-white shadow-sm text-xs text-slate-400">+</div>`;
-                list.appendChild(div);
-            });
+            if (html) { resultsDiv.innerHTML = html; resultsDiv.classList.remove('hidden'); }
+            else { resultsDiv.classList.add('hidden'); }
         }
 
         function logFoodItem(food, category) {
-            dailyLog.push({ ...food, category: category, type: 'food', id: Date.now() });
+            dailyLog.push({ ...food, category, id: Date.now() });
             document.getElementById('food-search').value = '';
             document.getElementById('search-results').classList.add('hidden');
-            document.getElementById('category-items-list').classList.add('hidden');
             saveAll();
         }
 
-        function saveAll() {
-            localStorage.setItem('bean_log', JSON.stringify(dailyLog));
-            updateTotals();
-            renderLog();
+        function renderLog() {
+            const list = document.getElementById('log-list'); list.innerHTML = '';
+            dailyLog.slice().reverse().forEach(i => {
+                const li = document.createElement('li');
+                let pClass = i.category === "Proteins" || i.category === "Binder" ? "p-neutral" : (i.p <= 50 ? "p-green" : (i.p <= 150 ? "p-yellow" : "p-red"));
+                
+                li.className = `p-4 rounded-3xl flex justify-between items-center ${pClass} mb-3 shadow-sm`;
+                li.innerHTML = `<div><div class="font-bold text-sm text-slate-800">${i.name}</div>
+                    <div class="text-[10px] opacity-60 font-bold uppercase">K: ${i.k} P: ${i.p} F: ${i.f} ${i.category === 'Proteins' ? '• PROTEIN' : ''}</div></div>
+                    <button onclick="removeItem(${i.id})" class="opacity-30 px-2 text-lg">✕</button>`;
+                list.appendChild(li);
+            });
         }
 
         function updateTotals() {
-            let tk=0, tp=0, tf=0; 
-            dailyLog.forEach(i => { tk+=i.k; tp+=i.p; tf+=i.f; });
+            let tk=0, tp=0, tf=0; dailyLog.forEach(i => { tk+=i.k; tp+=i.p; tf+=i.f; });
             document.getElementById('total-k').textContent = tk;
             document.getElementById('total-p').textContent = Math.max(0, tp);
             document.getElementById('total-f').textContent = tf;
@@ -245,64 +198,51 @@
             const pct = Math.min((v/m)*100, 100);
             const b = document.getElementById(id);
             b.style.width = pct+'%';
-            // If over limit, turn bar red
-            if(pct >= 100) { b.style.backgroundColor = "#f43f5e"; } 
-            else {
-                if(id === 'bar-k') b.style.backgroundColor = "#34d399";
-                if(id === 'bar-p') b.style.backgroundColor = "#a78bfa";
-                if(id === 'bar-f') b.style.backgroundColor = "#38bdf8";
-            }
+            b.style.backgroundColor = pct >= 100 ? "#f43f5e" : (id==='bar-k'?"#34d399":id==='bar-p'?"#a78bfa":"#38bdf8");
         }
 
-        function renderLog() {
-            const list = document.getElementById('log-list'); list.innerHTML = '';
-            dailyLog.slice().reverse().forEach(i => {
-                const li = document.createElement('li');
-                const pColorClass = getPColorClass(i.p, i.category);
-                
-                li.className = `p-4 rounded-3xl flex justify-between items-center ${pColorClass} mb-3 shadow-sm`;
-                li.innerHTML = `<div>
-                    <div class="font-bold text-sm text-slate-800">${i.name}</div>
-                    <div class="text-[10px] opacity-60 font-bold uppercase">K: ${i.k} P: ${i.p} F: ${i.f} ${i.category === 'Proteins' ? '• PROTEIN' : ''}</div>
-                </div>
-                <button onclick="removeItem(${i.id})" class="opacity-30 px-2 text-lg">✕</button>`;
-                list.appendChild(li);
-            });
-        }
-
-        function removeItem(id) { dailyLog = dailyLog.filter(i => i.id !== id); saveAll(); }
-        function clearToday() { if(confirm("Clear today's log?")) { dailyLog = []; saveAll(); } }
-        function switchTab(t) {
-            ['food', 'binder', 'history'].forEach(tab => document.getElementById(`section-${tab}`).classList.toggle('hidden', t !== tab));
-        }
-
-        function init() {
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-            document.getElementById('limit-k').value = limits.k;
-            document.getElementById('limit-p').value = limits.p;
-            document.getElementById('limit-f').value = limits.f;
-            document.getElementById('disp-limit-k').textContent = limits.k;
-            document.getElementById('disp-limit-p').textContent = limits.p;
-            document.getElementById('disp-limit-f').textContent = limits.f;
-            
-            // Fill binder select
-            const bs = document.getElementById('binder-select');
-            bs.innerHTML = '<option disabled selected>Select Binder</option>';
-            binderDatabase.forEach((b, i) => bs.add(new Option(b.name, i)));
-            
-            // Populate category select
-            const cs = document.getElementById('category-select');
-            Object.keys(foodDatabase).forEach(cat => cs.add(new Option(cat, cat)));
-
-            saveAll();
-        }
+        function changeQty(amt) { binderQty = Math.max(1, binderQty + amt); document.getElementById('binder-qty-display').textContent = binderQty; }
         function checkBinderEnable() { document.getElementById('add-binder-btn').disabled = false; }
         function addBinder() {
             const b = binderDatabase[document.getElementById('binder-select').value];
-            dailyLog.push({ name: `${binderQty}x Binder`, k: 0, p: -(b.bind * binderQty), f: 0, category: 'Binder', type: 'binder', id: Date.now() });
+            dailyLog.push({ name: `${binderQty}x ${b.name}`, k: 0, p: -(b.bind * binderQty), f: 0, category: 'Binder', id: Date.now() });
             saveAll();
         }
 
+        function renderCategoryItems(cat) {
+            const list = document.getElementById('category-items-list'); list.innerHTML = ''; list.classList.remove('hidden');
+            foodDatabase[cat].forEach(food => {
+                const div = document.createElement('div');
+                div.className = "p-4 bg-slate-50 rounded-2xl flex justify-between items-center cursor-pointer";
+                div.onclick = () => logFoodItem(food, cat);
+                div.innerHTML = `<span class="font-bold text-sm text-slate-800">${food.name}</span><span class="text-slate-300">+</span>`;
+                list.appendChild(div);
+            });
+        }
+
+        function saveAll() { localStorage.setItem('bean_log', JSON.stringify(dailyLog)); updateTotals(); renderLog(); }
+        function saveSettings() {
+            limits = { k: parseInt(document.getElementById('limit-k').value)||2000, p: parseInt(document.getElementById('limit-p').value)||1000, f: parseInt(document.getElementById('limit-f').value)||1000 };
+            localStorage.setItem('bean_limits', JSON.stringify(limits));
+            document.getElementById('disp-limit-k').textContent = limits.k; document.getElementById('disp-limit-p').textContent = limits.p; document.getElementById('disp-limit-f').textContent = limits.f;
+            updateTotals();
+        }
+        function removeItem(id) { dailyLog = dailyLog.filter(i => i.id !== id); saveAll(); }
+        function clearToday() { if(confirm("Reset all entries?")) { dailyLog = []; saveAll(); } }
+        function switchTab(t) { ['food', 'binder', 'history'].forEach(tab => {
+            document.getElementById(`section-${tab}`).classList.toggle('hidden', t !== tab);
+            const btn = document.getElementById(`tab-${tab}`);
+            if(t===tab){ btn.classList.add('bg-white','shadow-sm','text-slate-800'); btn.classList.remove('text-slate-500'); }
+            else { btn.classList.remove('bg-white','shadow-sm','text-slate-800'); btn.classList.add('text-slate-500'); }
+        }); }
+
+        function init() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            document.getElementById('limit-k').value = limits.k; document.getElementById('limit-p').value = limits.p; document.getElementById('limit-f').value = limits.f;
+            document.getElementById('disp-limit-k').textContent = limits.k; document.getElementById('disp-limit-p').textContent = limits.p; document.getElementById('disp-limit-f').textContent = limits.f;
+            const cs = document.getElementById('category-select'); Object.keys(foodDatabase).forEach(cat => cs.add(new Option(cat, cat)));
+            saveAll();
+        }
         init();
     </script>
 </body>
