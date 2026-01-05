@@ -299,7 +299,46 @@
             dailyLog.push({ name: `${binderQty}x ${b.name}`, k: 0, p: -(b.bind * binderQty), f: 0, category: 'Binder', id: Date.now() });
             saveAll();
         }
+        function exportData() {
+    if (dailyLog.length === 0) {
+        alert("No entries to export yet!");
+        return;
+    }
 
+    const date = new Date().toLocaleDateString();
+    let tk = 0, tp = 0, tf = 0;
+    let foodList = "";
+
+    // Calculate totals and build the food string
+    dailyLog.forEach(i => {
+        tk += i.k;
+        tp += i.p;
+        tf += i.f;
+        foodList += `- ${i.name} (K: ${i.k}, P: ${i.p}, F: ${i.f})\n`;
+    });
+
+    // Format the final message
+    const message = `Bean Dialysis Report - ${date}\n` +
+                    `--------------------------\n` +
+                    `TOTALS:\n` +
+                    `Potassium: ${tk}mg\n` +
+                    `Phosphorus: ${tp}mg\n` +
+                    `Fluid: ${tf}ml\n\n` +
+                    `ENTRIES:\n` +
+                    foodList;
+
+    // Use the Web Share API (works on mobile/modern browsers)
+    if (navigator.share) {
+        navigator.share({
+            title: `Bean Report ${date}`,
+            text: message
+        }).catch(console.error);
+    } else {
+        // Fallback for desktop: Copy to clipboard
+        navigator.clipboard.writeText(message);
+        alert("Report copied to clipboard!");
+    }
+}
         function saveAll() { localStorage.setItem('bean_log', JSON.stringify(dailyLog)); updateTotals(); renderLog(); }
         function saveSettings() {
             limits = { k: parseInt(document.getElementById('limit-k').value)||2000, p: parseInt(document.getElementById('limit-p').value)||1000, f: parseInt(document.getElementById('limit-f').value)||1000 };
@@ -329,6 +368,7 @@
     </script>
 </body>
 </html>
+
 
 
 
