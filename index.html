@@ -326,7 +326,7 @@ function addCustomFood() {
     <div class="text-[10px] opacity-60 font-bold uppercase tracking-tighter">
         K: ${i.k} | P: ${i.p} | F: ${i.f}ml | <span class="text-blue-600">PRO: ${i.pr}g</span>
     </div>
-// Change the button line to this for better hit-box and visibility
+    </div>
 <button onclick="removeItem(${i.id})" class="text-red-400 font-bold px-3 py-1 bg-red-50 rounded-full ml-4">✕</button>`;
                 list.appendChild(li);
             });
@@ -344,7 +344,7 @@ function addCustomFood() {
     document.getElementById('total-k').textContent = tk;
     document.getElementById('total-p').textContent = Math.max(0, tp);
     document.getElementById('total-f').textContent = tf;
-    document.getElementById('total-pr').textContent = tpr;
+    document.getElementById('total-pr').textContent = tpr.toFixed(1);
     
     updateBar('bar-k', tk, limits.k);
     updateBar('bar-p', Math.max(0, tp), limits.p);
@@ -362,10 +362,18 @@ function addCustomFood() {
         function changeQty(amt) { binderQty = Math.max(1, binderQty + amt); document.getElementById('binder-qty-display').textContent = binderQty; }
         function checkBinderEnable() { document.getElementById('add-binder-btn').disabled = false; }
         function addBinder() {
-            const b = binderDatabase[document.getElementById('binder-select').value];
-            dailyLog.push({ name: `${binderQty}x ${b.name}`, k: 0, p: -(b.bind * binderQty), f: 0, category: 'Binder', id: Date.now() });
-            saveAll();
-        }
+    const b = binderDatabase[document.getElementById('binder-select').value];
+    dailyLog.push({ 
+        name: `${binderQty}x ${b.name}`, 
+        k: 0, 
+        p: -(b.bind * binderQty), 
+        f: 0, 
+        pr: 0, // Add this line!
+        category: 'Binder', 
+        id: Date.now() 
+    });
+    saveAll();
+}
         function exportData() {
     if (dailyLog.length === 0) {
         alert("No entries to export yet!");
@@ -458,6 +466,7 @@ function addCustomFood() {
     </script>
 </body>
 </html>
+
 
 
 
