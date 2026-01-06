@@ -394,7 +394,7 @@
     document.getElementById('disp-limit-pr').textContent = limits.pr;
     updateTotals();
 }
-        }
+        
         function removeItem(id) { dailyLog = dailyLog.filter(i => i.id !== id); saveAll(); }
         function clearToday() { if(confirm("Reset today?")) { dailyLog = []; saveAll(); } }
         function switchTab(t) { 
@@ -429,6 +429,7 @@
     </script>
 </body>
 </html>
+
 
 
 
