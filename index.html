@@ -162,10 +162,10 @@
         { name: "Mandarin Orange (1 small)", k: 126, p: 15, f: 0, pr: 0.6 }
     ],
     "Dairy": [
-        { name: "Milk, Whole (1 cup)", k: 374, p: 251, f: 240, 8.1 },
-        { name: "Milk, Reduced Fat 2% (1 cup)", k: 390, p: 252, f: 240, 8.2 },
-        { name: "Milk, Lowfat 1% (1 cup)", k: 391, p: 253, f: 240, 8.3 },
-        { name: "Milk, Skim Nonfat (1 cup)", k: 411, p: 263, f: 240, 8.4 },
+        { name: "Milk, Whole (1 cup)", k: 374, p: 251, f: 240, pr: 8.1 },
+        { name: "Milk, Reduced Fat 2% (1 cup)", k: 390, p: 252, f: 240, pr: 8.2 },
+        { name: "Milk, Lowfat 1% (1 cup)", k: 391, p: 253, f: 240, pr: 8.3 },
+        { name: "Milk, Skim Nonfat (1 cup)", k: 411, p: 263, f: 240, pr: 8.4 },
         { name: "Rice Milk (1 cup)", k: 65, p: 48, f: 240, pr: 0.6 },
         { name: "Soy Milk (1 cup)", k: 371, p: 161, f: 240, pr: 8.3 },
         { name: "Almond Milk, Vanilla (1 cup)", k: 120, p: 19, f: 240, pr: 1 },
@@ -326,7 +326,8 @@ function addCustomFood() {
     <div class="text-[10px] opacity-60 font-bold uppercase tracking-tighter">
         K: ${i.k} | P: ${i.p} | F: ${i.f}ml | <span class="text-blue-600">PRO: ${i.pr}g</span>
     </div>
-<button onclick="removeItem(${i.id})" class="opacity-30 px-2 text-lg">✕</button>`;
+// Change the button line to this for better hit-box and visibility
+<button onclick="removeItem(${i.id})" class="text-red-400 font-bold px-3 py-1 bg-red-50 rounded-full ml-4">✕</button>`;
                 list.appendChild(li);
             });
         }
@@ -457,6 +458,7 @@ function addCustomFood() {
     </script>
 </body>
 </html>
+
 
 
 
