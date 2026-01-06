@@ -142,31 +142,36 @@
     <script>
         const foodDatabase = {
     "Fruits": [
-        { name: "Apple (1 med)", k: 195, p: 20, f: 0 },
-        { name: "Blueberries (1/2 cup)", k: 57, p: 9, f: 0 },
-        { name: "Strawberries (1/2 cup)", k: 115, p: 18, f: 0 },
-        { name: "Raspberries (1/2 cup)", k: 93, p: 15, f: 0 },
-        { name: "Blackberries (1/2 cup)", k: 116, p: 16, f: 0 },
-        { name: "Grapes (10 small)", k: 88, p: 10, f: 0 },
-        { name: "Pineapple (1/2 cup)", k: 90, p: 7, f: 0 },
-        { name: "Watermelon (1 cup)", k: 170, p: 15, f: 140 },
-        { name: "Peach (1 med)", k: 185, p: 20, f: 0 },
-        { name: "Plum (1 med)", k: 104, p: 11, f: 0 },
-        { name: "Pear (1 med)", k: 190, p: 20, f: 0 },
-        { name: "Cherries (10)", k: 150, p: 15, f: 0 },
-        { name: "Cranberries (1/2 cup)", k: 40, p: 6, f: 0 },
-        { name: "Mandarin Orange (1 small)", k: 132, p: 10, f: 0 }
+        { name: "Apple (1 med)", k: 133, p: 12, f: 0, pr: 0.25 },
+        { name: "Blueberries (1 cup)", k: 114, p: 18, f: 0, pr: 1.1 },
+        { name: "Strawberries (1 cup)", k: 220, p: 35, f: 0, pr: 1 },
+        { name: "Raspberries (1 cup)", k: 186 , p: 15, f: 0, pr: 1.5 },
+        { name: "Blackberries (1/2 cup)", k: 233, p: 32, f: 0, pr: 2 },
+        { name: "Grapes (10 small)", k: 115, p: 12, f: 0, pr: 0.5 },
+        { name: "Pineapple (1/2 cup)", k: 90, p: 7, f: 0, pr: 0.45 },
+        { name: "Watermelon (1 cup)", k: 170, p: 15, f: 140, pr: 1 },
+        { name: "Peach (1 med)", k: 179, p: 32, f: 0, pr: 1.3 },
+        { name: "Peaches, Canned (1/2 cup)", k: 121, p: 12, f: 0, pr: 0.5 }, 
+        { name: "Plum (1 med)", k: 104, p: 11, f: 0, pr: 0.4 },
+        { name: "Pear (1 med)", k: 206, p: 21, f: 0, pr: 0.6 },
+        { name: "Cherries (10)", k: 184, p: 18, f: 0, pr: 0.8 },
+        { name: "Cranberries (1/2 cup)", k: 40, p: 6, f: 0, pr: 0.2 },
+        { name: "Mandarin Orange (1 small)", k: 126, p: 15, f: 0, pr: 0.6 }
     ],
     "Dairy": [
-        { name: "Milk (1 cup)", k: 366, p: 232, f: 240 },
-        { name: "Rice Milk (1 cup)", k: 65, p: 48, f: 240 },
-        { name: "Soy Milk (1 cup)", k: 300, p: 120, f: 240 },
-        { name: "Almond Milk Vanilla (1 cup)", k: 120, p: 19, f: 240 },
-        { name: "Yogurt (6 oz)", k: 398, p: 245, f: 170 },
-        { name: "Cheddar Cheese (1 oz)", k: 28, p: 145, f: 0 },
-        { name: "Cream Cheese (1 tbsp)", k: 14, p: 15, f: 0 },
-        { name: "Hard Cheese (1 oz)", k: 20, p: 130, f: 0 },
-        { name: "Cottage Cheese (1/2 cup)", k: 86, p: 150, f: 0 }
+        { name: "Milk, Whole (1 cup)", k: 374, p: 251, f: 240, 8.1 },
+        { name: "Milk, Reduced Fat 2% (1 cup)", k: 390, p: 252, f: 240, 8.2 },
+        { name: "Milk, Lowfat 1% (1 cup)", k: 391, p: 253, f: 240, 8.3 },
+        { name: "Milk, Skim Nonfat (1 cup)", k: 411, p: 263, f: 240, 8.4 },
+        { name: "Rice Milk (1 cup)", k: 65, p: 48, f: 240, pr: 0.6 },
+        { name: "Soy Milk (1 cup)", k: 371, p: 161, f: 240, pr: 8.3 },
+        { name: "Almond Milk, Vanilla (1 cup)", k: 120, p: 19, f: 240, pr: 1 },
+        { name: "Almond Milk, Unsweetened (1 cup)", k: 49, p: 19, f: 240, pr: 0.7 }
+        { name: "Yogurt (6 oz)", k: 398, p: 245, f: 170, pr: 9 },
+        { name: "Cheddar Cheese (1 oz)", k: 21, p: 129, f: 0, pr: 7 },
+        { name: "Cream Cheese, Lowfat (1 tbsp)", k: 50, p: 94, f: 0, pr: 2.8 },
+        { name: "Swiss Cheese (1 oz)", k: 20, p: 163, f: 0, pr: 7.5 },
+        { name: "Cottage Cheese, Lowfat 2% (1/2 cup)", k: 86, p: 150, f: 0, pr: 12 }
     ],
     "Vegetables": [
         { name: "Asparagus (1/2 cup)", k: 135, p: 35, f: 0, pr: 1.5 }, 
@@ -192,18 +197,18 @@
         { name: "Zucchini (1/2 cup)", k: 162, p: 24, f: 0, pr: 0.7 } 
     ],
     "Grains" : [
-        { name: "White Bread (1 slice)", k: 32, p: 31, f: 0 },
-        { name: "Whole Wheat Bread (1 slice)", k: 80, p: 68, f: 0 }, 
-        { name: "English Muffin", k: 74, p: 72, f: 0 }, 
-        { name: "White Rice (1/2 cup)", k: 27, p: 34, f: 0 },
-        { name: "Pancake", k: 102, p: 122, f: 0 }
+        { name: "White Bread (1 slice)", k: 32, p: 31, f: 0, pr: 2.5 },
+        { name: "Whole Wheat Bread (1 slice)", k: 80, p: 68, f: 0, pr: 4 }, 
+        { name: "English Muffin", k: 74, p: 72, f: 0, pr: 4 }, 
+        { name: "White Rice (1/2 cup)", k: 27, p: 34, f: 0, pr: 2.2 },
+        { name: "Pancake", k: 102, p: 122, f: 0, pr: 5 }
         ], 
     "Proteins": [
         { name: "Chicken (3 oz)", k: 283, p: 174, f: 0, pr: 18 }, 
         { name: "Egg (1)", k: 66, p: 92, f: 0, pr: 6.25 }, 
-        { name: "Ground Beef (3 oz)", k: 233, p: 123, f: 0, pr: 15 },
-        { name: "Salmon (3 oz)", k: 326, p: 214, f: 0 },
-        { name: "Pork (3 oz)", k: 270, p: 180, f: 0 }
+        { name: "Ground Beef (3 oz)", k: 300, p: 181, f: 0, pr: 21 },
+        { name: "Salmon (3 oz)", k: 373, p: 266, f: 0, pr: 21 },
+        { name: "Pork (3 oz)", k: 308, p: 192, f: 0, pr: 21 }
     ],
     "Beverages": [
         { name: "Water (8 oz)", k: 0, p: 0, f: 240, pr: 0 }, 
@@ -429,6 +434,7 @@
     </script>
 </body>
 </html>
+
 
 
 
