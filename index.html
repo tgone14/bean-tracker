@@ -264,7 +264,7 @@
             let html = '';
             for (const [category, foods] of Object.entries(foodDatabase)) {
                 foods.forEach(food => {
-                    if (food.name.toLowerCase().includes(query.toLowerCase())) {
+                    if (food.name.toLowerCase().includes(query.toLowerCase()))} {
                         
                         const risk = getRiskLevel(food); 
 html += `<div onclick='logFoodItem(${JSON.stringify(food)}, "${category}")' class="p-4 border-b hover:bg-slate-50 cursor-pointer flex justify-between items-center">
@@ -275,7 +275,11 @@ html += `<div onclick='logFoodItem(${JSON.stringify(food)}, "${category}")' clas
     <div class="w-3 h-3 rounded-full ${risk.dotClass}"></div>
 </div>`;
         }
-
+                });
+            }
+            resultsDiv.innerHTML = html || `<div class="p-4 text-xs text-slate-400">No matches found</div>`;
+    resultsDiv.classList.remove('hidden');
+}
         function renderCategoryItems(cat) {
             const list = document.getElementById('category-items-list');
             list.innerHTML = ''; list.classList.remove('hidden');
@@ -433,6 +437,7 @@ html += `<div onclick='logFoodItem(${JSON.stringify(food)}, "${category}")' clas
     </script>
 </body>
 </html>
+
 
 
 
