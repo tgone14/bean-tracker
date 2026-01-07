@@ -236,18 +236,20 @@
     if (food.p > 150) pScore = 2;      // High Phosphorus
     else if (food.p > 50) pScore = 1;  // Med Phosphorus
 
-    // Determine the highest risk
+    // Determine the highest risk level
     const maxScore = Math.max(kScore, pScore);
     
-    // Determine the reason label
+    // Determine if we should say "Med" or "High"
+    const levelText = maxScore === 2 ? "High" : "Med";
+    
+    // Determine the reason label (K, P, or K+P)
     let reason = "";
     if (maxScore > 0) {
-        if (kScore >= pScore) reason += "K";
-        if (pScore >= kScore) reason += (reason ? "+P" : "P");
-        reason = `<span class="ml-2 px-1.5 py-0.5 bg-black/10 rounded text-[9px]">High ${reason}</span>`;
+        if (kScore === maxScore) reason += "K";
+        if (pScore === maxScore) reason += (reason ? "+P" : "P");
+        reason = `<span class="ml-2 px-1.5 py-0.5 bg-black/10 rounded text-[9px]">${levelText} ${reason}</span>`;
     }
 
-    // Return the CSS class and the label
     const colors = ["p-green", "p-yellow", "p-red"];
     const dots = ["dot-green", "dot-yellow", "dot-red"];
     
@@ -450,6 +452,7 @@
     </script>
 </body>
 </html>
+
 
 
 
