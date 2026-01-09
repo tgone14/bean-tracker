@@ -194,8 +194,9 @@ function updateUI() {
     
     // Header & Global Buttons
     document.getElementById('lang-btn').innerText = t.langBtn;
-    document.querySelector('h2').innerText = t.intake;
     document.getElementById('current-date').textContent = new Date().toLocaleDateString(currentLang === 'en' ? 'en-US' : 'es-ES', { weekday: 'long', month: 'short', day: 'numeric' });
+    document.querySelector('h2').innerText = t.intake;
+    
     
     // Tabs
     document.getElementById('tab-food').innerText = t.tabFood;
@@ -597,6 +598,7 @@ function updateUI() {
     </script>
 </body>
 </html>
+
 
 
 
