@@ -356,9 +356,8 @@
 
     function checkIngredientsForPhos(ingredientsText) {
         const rawText = ingredientsText.toLowerCase();
-        // Aggressive normalization
         const normalizedText = rawText.replace(/[^a-z0-9]/g, '');
-        
+
         const warningEl = document.getElementById('scanner-warning');
         const successEl = document.getElementById('scanner-success');
         const nameEl = document.getElementById('found-additive-name');
@@ -368,7 +367,6 @@
 
         let matches = [];
 
-        // Explicit check against the list using normalized comparisons
         phosphateAdditives.forEach(additive => {
             const normAdditive = additive.toLowerCase().replace(/[^a-z0-9]/g, '');
             if (normalizedText.includes(normAdditive)) {
@@ -376,15 +374,14 @@
             }
         });
 
-        // Catch-all: If it contains 'phosph' anywhere, flag it as a generic finding
-        if (matches.length === 0 && rawText.includes(\"phosph\")) {
-            matches.push(\"Generic Phosphate Found (Check Label)\");
+        if (matches.length === 0 && rawText.includes("phosph")) {
+            matches.push("Phosphate Root Detected (Generic)");
         }
 
         if (matches.length > 0) {
             warningEl.classList.remove('hidden');
             successEl.classList.add('hidden');
-            nameEl.innerText = [...new Set(matches)].join(\", \");
+            nameEl.innerText = [...new Set(matches)].join(", ");
         } else {
             successEl.classList.remove('hidden');
             warningEl.classList.add('hidden');
