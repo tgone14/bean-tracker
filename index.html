@@ -355,7 +355,10 @@
     }
 
     function checkIngredientsForPhos(ingredientsText) {
-        const text = ingredientsText.toLowerCase();
+        const rawText = ingredientsText.toLowerCase();
+        // Aggressive normalization
+        const normalizedText = rawText.replace(/[^a-z0-9]/g, '');
+        
         const warningEl = document.getElementById('scanner-warning');
         const successEl = document.getElementById('scanner-success');
         const nameEl = document.getElementById('found-additive-name');
@@ -363,12 +366,25 @@
 
         resultDisplay.classList.remove('hidden');
 
-        let matches = phosphateAdditives.filter(additive => text.includes(additive.toLowerCase()));
+        let matches = [];
+
+        // Explicit check against the list using normalized comparisons
+        phosphateAdditives.forEach(additive => {
+            const normAdditive = additive.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (normalizedText.includes(normAdditive)) {
+                matches.push(additive);
+            }
+        });
+
+        // Catch-all: If it contains 'phosph' anywhere, flag it as a generic finding
+        if (matches.length === 0 && rawText.includes(\"phosph\")) {
+            matches.push(\"Generic Phosphate Found (Check Label)\");
+        }
 
         if (matches.length > 0) {
             warningEl.classList.remove('hidden');
             successEl.classList.add('hidden');
-            nameEl.innerText = matches.join(", ");
+            nameEl.innerText = [...new Set(matches)].join(\", \");
         } else {
             successEl.classList.remove('hidden');
             warningEl.classList.add('hidden');
@@ -476,7 +492,8 @@
 
     let isProcessing = false;
     async function onScanSuccess(decodedText) {
-        if (isProcessing) return; isProcessing = true;
+        if (isProcessing) return;
+        isProcessing = true;
         try {
             await fetchProductData(decodedText);
             await html5QrCode.stop();
@@ -544,9 +561,15 @@
             });
             if (!response.ok) throw new Error("Status: " + response.status);
             const data = await response.json();
-            if (data.product && data.product.ingredients_text) { checkIngredientsForPhos(data.product.ingredients_text); } 
+            if (data.product && data.product.ingredients_text) {
+                console.log("Ingredients scanned:", data.product.ingredients_text);
+                checkIngredientsForPhos(data.product.ingredients_text);
+            }
             else { showUnknownState(); }
-        } catch (err) { showUnknownState(); }
+        } catch (err) {
+            console.error("API fetch error:", err);
+            showUnknownState();
+        }
     }
 
     function showUnknownState() {
